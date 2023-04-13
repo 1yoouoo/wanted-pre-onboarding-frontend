@@ -31,7 +31,7 @@ const SignInForm = () => {
   }, [userInfo]);
   return (
     <StyledSignInForm>
-      <div>로그인</div>
+      <h1>로그인</h1>
       <input
         name='email'
         value={userInfo.email}
@@ -41,6 +41,7 @@ const SignInForm = () => {
       />
       <input
         name='password'
+        type='password'
         value={userInfo.password}
         onChange={handleInputChange}
         data-testid='password-input'
@@ -62,6 +63,9 @@ const SignInForm = () => {
 };
 
 const StyledSignInForm = styled.form`
+  h1 {
+    font-size: 1.5rem;
+  }
   width: 400px;
   height: 300px;
   border: 1px solid #000;
@@ -73,13 +77,6 @@ const StyledSignInForm = styled.form`
     width: 300px;
     height: 30px;
     margin-top: 20px;
-  }
-  button {
-    margin-top: 20px;
-    width: 140px;
-    height: 30px;
-    color: #fff;
-    cursor: pointer;
   }
 `;
 export default SignInForm;
