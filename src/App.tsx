@@ -1,7 +1,8 @@
 import './App.css';
+import Routing from './Routing';
 
 function App() {
-	return <div className="App">setting</div>;
+	return <Routing />;
 }
 
 export default App;
