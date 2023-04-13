@@ -1,6 +1,7 @@
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import API from '../API/API';
 
 export interface UserInfo {
   email: string;
@@ -17,13 +18,13 @@ const SignUpForm = () => {
     setUserInfo({ ...userInfo, [name]: value });
   };
 
-  const handleSubmit = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (isButtonAbled) {
-      // eslint-disable-next-line no-alert
-      alert('회원가입 성공!');
-      navigate('/signin');
-    }
+    // eslint-disable-next-line no-alert
+    const data = { email: userInfo.email, password: userInfo.password };
+    await API.signUp(data);
+    alert('회원가입 성공!');
+    navigate('/signin');
   };
 
   const validateEmail = (email: string): boolean => {
