@@ -1,4 +1,4 @@
-import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
+import { ChangeEvent, MouseEvent, useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { StyledButton, UserInfo } from './SignUpForm';
 import { useNavigate } from 'react-router-dom';
@@ -8,18 +8,23 @@ const SignInForm = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState<UserInfo>({ email: '', password: '' });
   const [isButtonAbled, setIsButtonAbled] = useState<boolean>(false);
+  const [hasToken, setHasToken] = useState<boolean>(Boolean(localStorage.token));
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setUserInfo({ ...userInfo, [name]: value });
   };
-
+  const updateToken = (token: string) => {
+    localStorage.setItem('token', token);
+    setHasToken(true);
+  };
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const data = { email: userInfo.email, password: userInfo.password };
     const response = await API.signIn(data);
     const token = response.data.access_token;
-    localStorage.setItem('token', token);
+    updateToken(token);
+    hasToken && navigate('/todo');
   };
 
   const validateEmail = (email: string): boolean => {
