@@ -2,6 +2,7 @@ import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { StyledButton, UserInfo } from './SignUpForm';
 import { useNavigate } from 'react-router-dom';
+import API from '../API/API';
 
 const SignInForm = () => {
   const navigate = useNavigate();
@@ -13,9 +14,12 @@ const SignInForm = () => {
     setUserInfo({ ...userInfo, [name]: value });
   };
 
-  const handleSubmit = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    // submit logic
+    const data = { email: userInfo.email, password: userInfo.password };
+    const response = await API.signIn(data);
+    const token = response.data.access_token;
+    localStorage.setItem('token', token);
   };
 
   const validateEmail = (email: string): boolean => {
