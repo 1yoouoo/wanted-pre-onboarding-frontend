@@ -19,7 +19,11 @@ const SignUpForm = () => {
 
   const handleSubmit = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    // submit logic
+    if (isButtonAbled) {
+      // eslint-disable-next-line no-alert
+      alert('회원가입 성공!');
+      navigate('/signin');
+    }
   };
 
   const validateEmail = (email: string): boolean => {
@@ -35,7 +39,7 @@ const SignUpForm = () => {
   }, [userInfo]);
   return (
     <StyledSignUpForm>
-      <div>회원가입</div>
+      <h1>회원가입</h1>
       <input
         name='email'
         value={userInfo.email}
@@ -45,6 +49,7 @@ const SignUpForm = () => {
       />
       <input
         name='password'
+        type='password'
         value={userInfo.password}
         onChange={handleInputChange}
         data-testid='password-input'
@@ -66,6 +71,9 @@ const SignUpForm = () => {
 };
 
 const StyledSignUpForm = styled.form`
+  h1 {
+    font-size: 1.5rem;
+  }
   width: 400px;
   height: 300px;
   border: 1px solid #000;
@@ -78,15 +86,13 @@ const StyledSignUpForm = styled.form`
     height: 30px;
     margin-top: 20px;
   }
-  button {
-    margin-top: 20px;
-    width: 140px;
-    height: 30px;
-    color: #fff;
-    cursor: pointer;
-  }
 `;
 export const StyledButton = styled.button<{ disabled?: boolean }>`
+  margin-top: 20px;
+  width: 140px;
+  height: 30px;
+  color: #fff;
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   background-color: ${(props) => (props.disabled ? 'red' : 'green')};
 `;
 export default SignUpForm;
