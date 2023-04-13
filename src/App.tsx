@@ -1,8 +1,8 @@
 import './App.css';
 import Routing from './Routing';
 
-function App() {
-	return <Routing />;
-}
+const App = () => {
+  return <Routing />;
+};
 
 export default App;
