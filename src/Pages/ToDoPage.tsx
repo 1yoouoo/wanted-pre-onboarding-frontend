@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import API from '../API/API';
+import { TokenContext } from '../Auth/useAuth';
+import axios from 'axios';
 
 interface Todo {
   id?: number;
@@ -13,6 +15,8 @@ interface Todo {
 const ToDoPage = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
+  const { token, logout } = useContext(TokenContext);
+  const API_BASE_URL = 'https://www.pre-onboarding-selection-task.shop';
 
   const onChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -29,9 +33,21 @@ const ToDoPage = () => {
   };
 
   const getTodos = async () => {
-    const response = await API.getTodos();
-    return response.data;
+    const headers = { Authorization: `Bearer ${token}` };
+    try {
+      const response = await axios.get(`${API_BASE_URL}/todos`, { headers });
+      return response.data;
+    } catch (error) {
+      // eslint-disable-next-line no-alert
+      alert('Todo 데이터를 불러오지 못했습니다.');
+      throw new Error('Todo 데이터를 불러오지 못했습니다.');
+    }
   };
+
+  // const getTodos = async () => {
+  //   const response = await API.getTodos();
+  //   return response.data;
+  // };
 
   const updateTodo = async (updatedTodo: Todo): Promise<void> => {
     await API.updateTodo({
@@ -118,10 +134,13 @@ const ToDoPage = () => {
       setTodos(todoData);
     };
     fetchData();
-  }, []);
+  }, [getTodos]);
 
   return (
     <StyledToDoPage>
+      <button type='button' onClick={() => logout()}>
+        로그아웃
+      </button>
       <h1>오늘 할 일</h1>
       <input data-testid='new-todo-input' value={inputValue} onChange={onChangeValue} />
       <button data-testid='new-todo-add-button' type='button' onClick={onClickAddButton}>
