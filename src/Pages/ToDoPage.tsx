@@ -1,23 +1,92 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import API from '../API/API';
 
+interface Todo {
+  id: number;
+  todo: string;
+  isCompleted: boolean;
+}
 const ToDoPage = () => {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [inputValue, setInputValue] = useState<string>('');
+
+  const onChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  };
+  const onClickAddButton = async () => {
+    const newTodo = await createTodo();
+    setTodos((prevTodos) => [...prevTodos, newTodo]);
+    setInputValue('');
+  };
+
+  const createTodo = async () => {
+    const response = await API.createTodo(inputValue);
+    return response.data;
+  };
+
+  const getTodos = async () => {
+    const response = await API.getTodos();
+    return response.data;
+  };
+
+  const updateTodo = async (updatedTodo: Todo): Promise<void> => {
+    await API.updateTodo({
+      id: updatedTodo.id,
+      todo: updatedTodo.todo,
+      isCompleted: updatedTodo.isCompleted,
+    });
+  };
+
+  const handleCheckboxChange = async (id: number) => {
+    const updatedTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          isCompleted: !todo.isCompleted,
+        };
+      }
+      return todo;
+    });
+    setTodos(updatedTodos);
+
+    const updatedTodo = updatedTodos.find((todo) => todo.id === id);
+    if (updatedTodo) {
+      await updateTodo(updatedTodo);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const todoData = await getTodos();
+      setTodos(todoData);
+    };
+    fetchData();
+  }, []);
+
   return (
     <StyledToDoPage>
       <h1>오늘 할 일</h1>
+      <input data-testid='new-todo-input' value={inputValue} onChange={onChangeValue} />
+      <button data-testid='new-todo-add-button' type='button' onClick={onClickAddButton}>
+        추가
+      </button>
       <ul>
-        <li>
-          <label>
-            <input type='checkbox' />
-            <span>TODO 1</span>
-          </label>
-        </li>
-        <li>
-          <label>
-            <input type='checkbox' />
-            <span>TODO 2</span>
-          </label>
-        </li>
-        <button type='button'>test</button>
+        {todos &&
+          todos.map((todo) => {
+            return (
+              <li key={todo.id}>
+                <label>
+                  <input
+                    type='checkbox'
+                    checked={todo.isCompleted}
+                    onChange={() => handleCheckboxChange(todo.id)}
+                  />
+                  <span>{todo.todo}</span>
+                </label>
+              </li>
+            );
+          })}
       </ul>
     </StyledToDoPage>
   );
