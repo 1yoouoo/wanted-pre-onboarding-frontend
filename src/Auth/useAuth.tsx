@@ -35,7 +35,7 @@ export const TokenProvider = ({ children }: any) => {
 
   const login = useCallback(
     (newToken: string) => {
-      localStorage.setItem('token', newToken);
+      localStorage.setItem('token', JSON.stringify(newToken));
       setToken(newToken);
     },
     [setToken]
