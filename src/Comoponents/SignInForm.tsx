@@ -1,30 +1,31 @@
 import { ChangeEvent, MouseEvent, useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { StyledButton, UserInfo } from './SignUpForm';
 import { useNavigate } from 'react-router-dom';
-import API from '../API/API';
+import API from '../api/API';
+import { StyledButton, UserInfo } from './SignUpForm';
+import { TokenContext } from '../auth/useAuth';
 
 const SignInForm = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState<UserInfo>({ email: '', password: '' });
   const [isButtonAbled, setIsButtonAbled] = useState<boolean>(false);
-  const [hasToken, setHasToken] = useState<boolean>(Boolean(localStorage.token));
+  const { login } = useContext(TokenContext);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setUserInfo({ ...userInfo, [name]: value });
   };
-  const updateToken = (token: string) => {
-    localStorage.setItem('token', token);
-    setHasToken(true);
-  };
-  const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
+
+  const signInUser = async () => {
     const data = { email: userInfo.email, password: userInfo.password };
     const response = await API.signIn(data);
-    const token = response.data.access_token;
-    updateToken(token);
-    hasToken && navigate('/todo');
+    const authToken = response.data.access_token;
+    login(authToken);
+  };
+
+  const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await signInUser();
   };
 
   const validateEmail = (email: string): boolean => {
