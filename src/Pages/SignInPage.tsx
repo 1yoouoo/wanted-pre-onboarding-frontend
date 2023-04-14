@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import SignInForm from '../comoponents/SignInForm';
+import SignInForm from '../Comoponents/SignInForm';
 
 const SignInPage = () => {
   return (

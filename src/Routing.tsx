@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import SignUpPage from './pages/SignUpPage';
-import SignInPage from './pages/SignInPage';
-import ToDoPage from './pages/ToDoPage';
-import { TokenContext } from './auth/useAuth';
+import SignUpPage from './Pages/SignUpPage';
+import SignInPage from './Pages/SignInPage';
+import ToDoPage from './Pages/ToDoPage';
+import { TokenContext } from './Auth/useAuth';
 import { useContext } from 'react';
 
 const Routing: React.FC = (): JSX.Element => {

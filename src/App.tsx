@@ -1,6 +1,6 @@
 import './App.css';
 import Routing from './Routing';
-import { TokenProvider } from './auth/useAuth';
+import { TokenProvider } from './Auth/useAuth';
 
 const App = () => {
   return (
