@@ -10,6 +10,7 @@ const Routing: React.FC = (): JSX.Element => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path='/' element={<Navigate replace to='/signin' />} />
         <Route path='/signup' element={token ? <Navigate to='/todo' /> : <SignUpPage />} />
         <Route path='/signin' element={token ? <Navigate to='/todo' /> : <SignInPage />} />
         <Route path='/todo' element={token ? <ToDoPage /> : <Navigate to='/signin' />} />
