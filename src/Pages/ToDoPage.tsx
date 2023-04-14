@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import API from '../API/API';
 import { TokenContext } from '../Auth/useAuth';
-import axios from 'axios';
 
 interface Todo {
   id?: number;
@@ -15,12 +14,12 @@ interface Todo {
 const ToDoPage = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
-  const { token, logout } = useContext(TokenContext);
-  const API_BASE_URL = 'https://www.pre-onboarding-selection-task.shop';
+  const { logout } = useContext(TokenContext);
 
   const onChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
+
   const onClickAddButton = async () => {
     const newTodo = await createTodo();
     setTodos((prevTodos) => [...prevTodos, newTodo]);
@@ -33,21 +32,9 @@ const ToDoPage = () => {
   };
 
   const getTodos = async () => {
-    const headers = { Authorization: `Bearer ${token}` };
-    try {
-      const response = await axios.get(`${API_BASE_URL}/todos`, { headers });
-      return response.data;
-    } catch (error) {
-      // eslint-disable-next-line no-alert
-      alert('Todo 데이터를 불러오지 못했습니다.');
-      throw new Error('Todo 데이터를 불러오지 못했습니다.');
-    }
+    const response = await API.getTodos();
+    return response.data;
   };
-
-  // const getTodos = async () => {
-  //   const response = await API.getTodos();
-  //   return response.data;
-  // };
 
   const updateTodo = async (updatedTodo: Todo): Promise<void> => {
     await API.updateTodo({
@@ -79,6 +66,7 @@ const ToDoPage = () => {
       await updateTodo(updatedTodo);
     }
   };
+
   const handleModifyButtonClick = (id: number) => {
     const updatedTodos = todos.map((todo) => {
       if (todo.id === id) {
@@ -115,6 +103,7 @@ const ToDoPage = () => {
       );
     }
   };
+
   const handleModifyCancel = async (id: number) => {
     setTodos((prevTodos) =>
       prevTodos.map((todo) =>
@@ -134,7 +123,7 @@ const ToDoPage = () => {
       setTodos(todoData);
     };
     fetchData();
-  }, [getTodos]);
+  }, []);
 
   return (
     <StyledToDoPage>
