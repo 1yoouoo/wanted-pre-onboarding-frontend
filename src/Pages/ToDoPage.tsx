@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import API from '../API/API';
+import { TokenContext } from '../Auth/useAuth';
 
 interface Todo {
   id?: number;
@@ -13,10 +14,12 @@ interface Todo {
 const ToDoPage = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
+  const { logout } = useContext(TokenContext);
 
   const onChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
+
   const onClickAddButton = async () => {
     const newTodo = await createTodo();
     setTodos((prevTodos) => [...prevTodos, newTodo]);
@@ -63,6 +66,7 @@ const ToDoPage = () => {
       await updateTodo(updatedTodo);
     }
   };
+
   const handleModifyButtonClick = (id: number) => {
     const updatedTodos = todos.map((todo) => {
       if (todo.id === id) {
@@ -99,6 +103,7 @@ const ToDoPage = () => {
       );
     }
   };
+
   const handleModifyCancel = async (id: number) => {
     setTodos((prevTodos) =>
       prevTodos.map((todo) =>
@@ -122,6 +127,9 @@ const ToDoPage = () => {
 
   return (
     <StyledToDoPage>
+      <button type='button' onClick={() => logout()}>
+        로그아웃
+      </button>
       <h1>오늘 할 일</h1>
       <input data-testid='new-todo-input' value={inputValue} onChange={onChangeValue} />
       <button data-testid='new-todo-add-button' type='button' onClick={onClickAddButton}>
