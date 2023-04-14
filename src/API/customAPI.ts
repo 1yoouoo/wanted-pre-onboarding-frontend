@@ -5,6 +5,7 @@ import axios from 'axios';
 
 const ApiBase = 'https://www.pre-onboarding-selection-task.shop/';
 const token = localStorage.getItem('token');
+const parsedToken = JSON.parse(token);
 
 const axiosApi = ({ options }: any) => {
   const instance = axios.create({
@@ -45,8 +46,8 @@ const axiosAuthApi = ({ options }: any) => {
     baseURL: ApiBase,
     ...options,
     headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+      Authorization: `Bearer ${parsedToken}`,
     },
   });
   instance.interceptors.response.use(
