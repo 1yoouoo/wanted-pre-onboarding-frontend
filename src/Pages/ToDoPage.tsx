@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import API from '../API/API';
+import { TokenContext } from '../Auth/useAuth';
 
 interface Todo {
   id?: number;
@@ -13,6 +14,7 @@ interface Todo {
 const ToDoPage = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
+  const { token } = useContext(TokenContext);
 
   const onChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -118,7 +120,7 @@ const ToDoPage = () => {
       setTodos(todoData);
     };
     fetchData();
-  }, []);
+  }, [token]);
 
   return (
     <StyledToDoPage>
