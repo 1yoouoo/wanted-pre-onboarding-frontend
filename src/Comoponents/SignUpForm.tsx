@@ -1,7 +1,7 @@
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import API from '../API/API';
+import API from '../api/API';
 
 export interface UserInfo {
   email: string;
@@ -18,11 +18,15 @@ const SignUpForm = () => {
     setUserInfo({ ...userInfo, [name]: value });
   };
 
-  const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    // eslint-disable-next-line no-alert
+  const signUpUser = async () => {
     const data = { email: userInfo.email, password: userInfo.password };
     await API.signUp(data);
+  };
+
+  const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await signUpUser();
+    // eslint-disable-next-line no-alert
     alert('회원가입 성공!');
     navigate('/signin');
   };
