@@ -1,8 +1,13 @@
 import './App.css';
 import Routing from './Routing';
+import { TokenProvider } from './auth/useAuth';
 
 const App = () => {
-  return <Routing />;
+  return (
+    <TokenProvider>
+      <Routing />
+    </TokenProvider>
+  );
 };
 
 export default App;
