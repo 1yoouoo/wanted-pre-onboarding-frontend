@@ -3,10 +3,13 @@ import styled from 'styled-components';
 import API from '../API/API';
 
 interface Todo {
-  id: number;
+  id?: number;
   todo: string;
   isCompleted: boolean;
+  isEditing?: boolean;
+  editingValue?: string;
 }
+
 const ToDoPage = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
@@ -38,6 +41,11 @@ const ToDoPage = () => {
     });
   };
 
+  const deleteTodo = async (id: number) => {
+    await API.deleteTodo(id);
+    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+  };
+
   const handleCheckboxChange = async (id: number) => {
     const updatedTodos = todos.map((todo) => {
       if (todo.id === id) {
@@ -54,6 +62,54 @@ const ToDoPage = () => {
     if (updatedTodo) {
       await updateTodo(updatedTodo);
     }
+  };
+  const handleModifyButtonClick = (id: number) => {
+    const updatedTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          isEditing: true,
+          editingValue: todo.todo,
+        };
+      }
+      return todo;
+    });
+    setTodos(updatedTodos);
+  };
+
+  const handleModifySubmit = async (id: number) => {
+    const updatedTodo = todos.find((todo) => todo.id === id);
+    if (updatedTodo) {
+      await updateTodo({
+        id: updatedTodo.id,
+        todo: updatedTodo.editingValue,
+        isCompleted: updatedTodo.isCompleted,
+      });
+      setTodos((prevTodos) =>
+        prevTodos.map((todo) =>
+          todo.id === id
+            ? {
+                ...updatedTodo,
+                editingValue: updatedTodo.editingValue,
+                isEditing: false,
+                todo: updatedTodo.editingValue,
+              }
+            : todo
+        )
+      );
+    }
+  };
+  const handleModifyCancel = async (id: number) => {
+    setTodos((prevTodos) =>
+      prevTodos.map((todo) =>
+        todo.id === id
+          ? {
+              ...todo,
+              isEditing: false,
+            }
+          : todo
+      )
+    );
   };
 
   useEffect(() => {
@@ -82,7 +138,56 @@ const ToDoPage = () => {
                     checked={todo.isCompleted}
                     onChange={() => handleCheckboxChange(todo.id)}
                   />
-                  <span>{todo.todo}</span>
+                  {todo.isEditing ? (
+                    <>
+                      <input
+                        data-testid='modify-input'
+                        value={todo.editingValue}
+                        onChange={(event) =>
+                          setTodos((prevTodos) =>
+                            prevTodos.map((prevTodo) =>
+                              prevTodo.id === todo.id
+                                ? { ...prevTodo, editingValue: event.target.value }
+                                : prevTodo
+                            )
+                          )
+                        }
+                      />
+
+                      <button
+                        data-testid='submit-button'
+                        type='button'
+                        onClick={() => handleModifySubmit(todo.id)}
+                      >
+                        제출
+                      </button>
+                      <button
+                        data-testid='cancel-button'
+                        type='button'
+                        onClick={() => handleModifyCancel(todo.id)}
+                      >
+                        취소
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <span>{todo.todo}</span>
+                      <button
+                        data-testid='modify-button'
+                        type='button'
+                        onClick={() => handleModifyButtonClick(todo.id)}
+                      >
+                        수정
+                      </button>
+                      <button
+                        data-testid='delete-button'
+                        type='button'
+                        onClick={() => deleteTodo(todo.id)}
+                      >
+                        삭제
+                      </button>
+                    </>
+                  )}
                 </label>
               </li>
             );
