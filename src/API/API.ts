@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { defaultInstance } from './customAPI';
+import { authInstance, defaultInstance } from './customAPI';
 
 interface UserData {
   email: string;
@@ -14,6 +14,11 @@ const API = {
 
   signIn: async (data: UserData): Promise<AxiosResponse> => {
     const response = await defaultInstance.post(`auth/signin`, data);
+    return response;
+  },
+
+  getTodos: async (): Promise<AxiosResponse> => {
+    const response = await authInstance.get(`todos`);
     return response;
   },
 };
