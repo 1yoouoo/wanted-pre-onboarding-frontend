@@ -4,8 +4,6 @@
 import axios from 'axios';
 
 const ApiBase = 'https://www.pre-onboarding-selection-task.shop/';
-const token = localStorage.getItem('token');
-const parsedToken = JSON.parse(token);
 
 const axiosApi = ({ options }: any) => {
   const instance = axios.create({
@@ -47,7 +45,6 @@ const axiosAuthApi = ({ options }: any) => {
     ...options,
     headers: {
       Accept: 'application/json',
-      Authorization: `Bearer ${parsedToken}`,
     },
   });
   instance.interceptors.response.use(
@@ -61,10 +58,14 @@ const axiosAuthApi = ({ options }: any) => {
     }
   );
   instance.interceptors.request.use(
-    (request) => {
-      console.log('interceptor > request', request);
-
-      return request;
+    (config) => {
+      const token = localStorage.getItem('token');
+      const parsedToken = JSON.parse(token);
+      if (token) {
+        config.headers.Authorization = `Bearer ${parsedToken}`;
+      }
+      console.log('interceptor > request', config);
+      return config;
     },
     (error) => {
       console.log('interceptor > error', error);
