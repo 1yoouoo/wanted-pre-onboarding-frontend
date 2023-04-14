@@ -40,5 +40,10 @@ const API = {
     });
     return response;
   },
+
+  deleteTodo: async (id: number): Promise<AxiosResponse> => {
+    const response = await authInstance.delete(`todos/${id}`);
+    return response;
+  },
 };
 export default API;
