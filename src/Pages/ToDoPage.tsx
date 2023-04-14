@@ -218,6 +218,11 @@ const StyledToDoPage = styled.div`
   li {
     list-style: none;
   }
+  button {
+    width: 60px;
+    height: 30px;
+    border: 1px solid #000;
+  }
 `;
 
 export default ToDoPage;
