@@ -1,8 +1,8 @@
 import { ChangeEvent, MouseEvent, useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import API from '../api/API';
-import { TokenContext } from '../auth/useAuth';
+import API from '../API/API';
+import { TokenContext } from '../Auth/useAuth';
 import { StyledButton, UserInfo } from './SignUpForm';
 
 const SignInForm = () => {

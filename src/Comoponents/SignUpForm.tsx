@@ -1,7 +1,7 @@
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import API from '../api/API';
+import API from '../API/API';
 
 export interface UserInfo {
   email: string;
